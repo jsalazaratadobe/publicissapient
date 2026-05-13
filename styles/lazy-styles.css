@@ -107,6 +107,21 @@ main hr {
   }
 }
 
+/* H2 accent — thin brand-gradient bar beneath h2 in plain content sections */
+main > .section:not(.hero-container, .gradient, .ink, .rust) h2::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin-top: 0.35em;
+  background: var(--gradient-brand);
+  border-radius: 1px;
+}
+
+main > .section.center:not(.hero-container, .gradient, .ink, .rust) h2::after {
+  margin-inline: auto;
+}
+
 /* ==========================================================================
   Header scroll shadow — appears after user scrolls past hero
   ========================================================================== */
