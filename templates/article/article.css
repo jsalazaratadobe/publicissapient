@@ -50,6 +50,20 @@
   height: 100%;
 }
 
+/* Text is now at the top (normal flow), outside the original bottom-only gradient's
+   35% start point. Override to add a top-fade that protects the h1 area. */
+.article .hero > div:first-child::after {
+  top: 0;
+  height: auto;
+  background: linear-gradient(
+    to bottom,
+    light-dark(rgb(245 242 237 / 75%), rgb(6 13 13 / 65%)) 0%,
+    transparent 35%,
+    transparent 55%,
+    light-dark(var(--color-parchment), var(--color-obsidian)) 100%
+  );
+}
+
 /* ==========================================================================
    Author / Date byline
    ========================================================================== */
