@@ -196,9 +196,8 @@ async function loadEager(doc) {
 
   // Consent stub — wire to real CMP later; true for demo
   const isConsentGiven = true;
-  const isQuickEdit = document.body.classList.contains('quick-edit');
 
-  const martechLoadedPromise = isQuickEdit ? Promise.resolve() : initMartech(
+  const martechLoadedPromise = initMartech(
     {
       datastreamId: 'd73be188-bc37-4ede-a5da-8aa7cd1e343b',
       orgId: '138A07885EE042D20A495CFA@AdobeOrg',
@@ -231,7 +230,7 @@ async function loadEager(doc) {
     decorateMain(main);
     document.body.classList.add('appear');
     await Promise.all([
-      isQuickEdit ? Promise.resolve() : martechLoadedPromise.then(martechEager),
+      martechLoadedPromise.then(martechEager),
       loadSection(main.querySelector('.section'), async (s) => {
         await waitForFirstImage(s);
         await loadFragments(s);
@@ -275,9 +274,7 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(footerEl);
-  if (!document.body.classList.contains('quick-edit')) {
-    await martechLazy();
-  }
+  await martechLazy();
 
   /* Scroll reveal: sections below the viewport animate in as they enter */
   if (main && 'IntersectionObserver' in window) {
@@ -336,7 +333,6 @@ async function loadLazy(doc) {
   }
 
   const loadQuickEdit = async (...args) => {
-    document.body.classList.add('quick-edit');
     const { default: initQuickEdit } = await import('../tools/quick-edit/quick-edit.js');
     initQuickEdit(...args);
   };
@@ -359,15 +355,12 @@ async function loadLazy(doc) {
 
 (() => {
   const hasQE = new URL(window.location.href).searchParams.has('quick-edit');
-  if (hasQE) {
-    document.body.classList.add('quick-edit');
-    import('../tools/quick-edit/quick-edit.js').then((mod) => mod.default());
-  }
+  if (hasQE) import('../tools/quick-edit/quick-edit.js').then((mod) => mod.default());
 })();
 
 function loadDelayed() {
   window.setTimeout(() => {
-    if (!document.body.classList.contains('quick-edit')) martechDelayed();
+    martechDelayed();
     import('./delayed.js');
   }, 3000);
 }
