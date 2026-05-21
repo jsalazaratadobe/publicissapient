@@ -20,7 +20,7 @@ import {
 import {
   initMartech, martechEager, martechLazy, martechDelayed,
 } from '../plugins/martech/src/index.js';
-import { getAllMetadata } from './shared.js';
+import { getAllMetadata, getLocale } from './shared.js';
 import { initPageSchemas } from './schema.js';
 import dynamicBlocks from '../blocks/dynamic/index.js';
 
@@ -111,8 +111,8 @@ async function loadFragments(section) {
   const { loadFragment } = await import('../blocks/fragment/fragment.js');
   await Promise.all(fragments.map(async (a) => {
     try {
-      const { pathname } = new URL(a.href);
-      const frag = await loadFragment(pathname);
+      const { pathname, hash } = new URL(a.href);
+      const frag = await loadFragment(`${pathname}${hash}`);
       a.parentElement.replaceWith(...frag.children);
     } catch (error) {
       console.error('Fragment loading failed', error);
@@ -190,7 +190,7 @@ async function loadTemplate(main, template) {
 }
 
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  getLocale();
   decorateTemplateAndTheme();
   applyTheme();
 
