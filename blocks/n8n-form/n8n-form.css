@@ -67,43 +67,43 @@
   font-weight: 700;
 }
 
-/* Input Styling - outline is only box-shadow (same size/position always, so it never moves).
-   !important overrides global main input { border: 1px } and main input:hover so field never shrinks. */
-.n8n-form input {
+/* Input ring uses box-shadow (fixed 2px) so focus/hover never shifts layout */
+main .n8n-form input {
   box-sizing: border-box;
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid transparent !important;
+  border: 2px solid transparent;
   border-radius: 6px;
   font-size: var(--body-font-size-s);
   font-family: var(--body-font-family);
   background-color: light-dark(var(--color-light), rgb(25 29 35));
   color: var(--text-color);
   transition: box-shadow 0.2s ease;
-  box-shadow: 0 0 0 2px light-dark(var(--color-gray-300), var(--color-gray-600)) !important;
+  box-shadow: 0 0 0 2px light-dark(var(--color-gray-300), var(--color-gray-600));
 }
 
-.n8n-form input::placeholder {
+main .n8n-form input::placeholder {
   color: light-dark(var(--color-gray-400), var(--color-gray-500));
 }
 
-.n8n-form input:hover {
-  border: 2px solid transparent !important;
-  box-shadow: 0 0 0 2px light-dark(var(--color-gray-300), var(--color-gray-600)) !important;
+main .n8n-form input:hover {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px light-dark(var(--color-gray-300), var(--color-gray-600));
 }
 
-.n8n-form input:focus,
-.n8n-form input:focus-visible {
+main .n8n-form input:focus,
+main .n8n-form input:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px light-dark(var(--color-rust), var(--color-rust-bright)) !important;
+  box-shadow: 0 0 0 2px light-dark(var(--color-rust), var(--color-rust-bright));
 }
 
-.n8n-form input:invalid:not(:placeholder-shown) {
-  box-shadow: 0 0 0 2px light-dark(var(--color-red-500), var(--color-red-400)) !important;
+main .n8n-form input:invalid:not(:placeholder-shown) {
+  box-shadow: 0 0 0 2px light-dark(var(--color-red-500), var(--color-red-400));
 }
 
-.n8n-form input:invalid:not(:placeholder-shown):focus {
-  box-shadow: 0 0 0 2px light-dark(var(--color-red-500), var(--color-red-400)) !important;
+main .n8n-form input:invalid:not(:placeholder-shown):focus,
+main .n8n-form input:invalid:not(:placeholder-shown):focus-visible {
+  box-shadow: 0 0 0 2px light-dark(var(--color-red-500), var(--color-red-400));
 }
 
 /* Button Styling – override global button.button / .primary (fixed rust, no dark shift) */
@@ -232,26 +232,27 @@
 
 /* High Contrast Mode Support */
 @media (prefers-contrast: more) {
-  .n8n-form input,
-  .n8n-form input:hover {
-    border-width: 3px !important;
-    box-shadow: 0 0 0 3px light-dark(var(--color-gray-300), var(--color-gray-600)) !important;
+  main .n8n-form input,
+  main .n8n-form input:hover {
+    border-width: 3px;
+    box-shadow: 0 0 0 3px light-dark(var(--color-gray-300), var(--color-gray-600));
   }
 
-  .n8n-form input:focus,
-  .n8n-form input:focus-visible {
-    box-shadow: 0 0 0 3px light-dark(var(--color-rust), var(--color-rust-bright)) !important;
+  main .n8n-form input:focus,
+  main .n8n-form input:focus-visible {
+    box-shadow: 0 0 0 3px light-dark(var(--color-rust), var(--color-rust-bright));
   }
 
-  .n8n-form input:invalid:not(:placeholder-shown),
-  .n8n-form input:invalid:not(:placeholder-shown):focus {
-    box-shadow: 0 0 0 3px light-dark(var(--color-red-500), var(--color-red-400)) !important;
+  main .n8n-form input:invalid:not(:placeholder-shown),
+  main .n8n-form input:invalid:not(:placeholder-shown):focus,
+  main .n8n-form input:invalid:not(:placeholder-shown):focus-visible {
+    box-shadow: 0 0 0 3px light-dark(var(--color-red-500), var(--color-red-400));
   }
 }
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  .n8n-form input,
+  main .n8n-form input,
   .n8n-form button.button {
     transition: none;
   }
