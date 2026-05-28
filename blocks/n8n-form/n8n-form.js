@@ -220,7 +220,7 @@ function createForm(config) {
   const header = document.createElement('div');
   header.className = 'form-header';
 
-  const formTitle = document.createElement('h2');
+  const formTitle = document.createElement('h3');
   formTitle.textContent = title;
   formTitle.className = 'form-title';
   header.appendChild(formTitle);
@@ -253,7 +253,7 @@ function createForm(config) {
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
   submitButton.textContent = 'Submit';
-  submitButton.className = 'button primary';
+  submitButton.className = 'button';
   submitWrapper.appendChild(submitButton);
   form.appendChild(submitWrapper);
 
