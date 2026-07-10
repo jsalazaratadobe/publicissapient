@@ -707,6 +707,20 @@ async function collectAllFilePaths(basePath, files, baselineSite) {
       const normalized = relPath || item.name;
       if (pathStartsWithExcludedLocale(normalized)) continue;
       fileList.push(normalized);
+
+      if (item.ext === 'html') {
+        const hiddenFolder = `.${item.name}`;
+        const hiddenPath = bp ? `${bp}/${hiddenFolder}` : hiddenFolder;
+        let hiddenItems = [];
+        try {
+          hiddenItems = await listDaFolder(hiddenPath, baselineSite);
+        } catch {
+          hiddenItems = [];
+        }
+        if (hiddenItems.length > 0) {
+          await collectAllFilePaths(hiddenPath, fileList, baselineSite);
+        }
+      }
     } else if (isFolder) {
       const subPath = bp ? `${bp}/${item.name}` : item.name;
       await collectAllFilePaths(subPath, fileList, baselineSite);
@@ -715,7 +729,26 @@ async function collectAllFilePaths(basePath, files, baselineSite) {
   return fileList;
 }
 
-async function copyDaFile(sourcePath, newSiteName, baselineSite) {
+function isHiddenAssetPath(path) {
+  return path.split('/')[0].startsWith('.');
+}
+
+async function rewriteKnownHiddenAssetRefs(sourcePath, newSiteName, baselineSite, hiddenAssetPaths) {
+  if (hiddenAssetPaths.length === 0) return;
+  const response = await cloneitProcessFetch('da', Paths.daSource(newSiteName, sourcePath));
+  if (!response.ok) return;
+  const original = await response.text();
+  let rewritten = original;
+  hiddenAssetPaths.forEach((assetPath) => {
+    const from = `https://content.da.live/${ORG}/${baselineSite}/${assetPath}`;
+    const to = `https://content.da.live/${ORG}/${newSiteName}/${assetPath}`;
+    rewritten = rewritten.split(from).join(to);
+  });
+  if (rewritten === original) return;
+  await createDaSource(newSiteName, sourcePath, rewritten);
+}
+
+async function copyDaFile(sourcePath, newSiteName, baselineSite, hiddenAssetPaths) {
   const response = await cloneitProcessFetch('da', Paths.daCopyFromBaseline(baselineSite, sourcePath), {
     method: 'POST',
     form: { destination: `/${ORG}/${newSiteName}/${sourcePath}` },
@@ -725,6 +758,11 @@ async function copyDaFile(sourcePath, newSiteName, baselineSite) {
     const text = await response.text();
     throw new Error(`Failed to copy ${sourcePath}: ${response.status} ${response.statusText} - ${text}`);
   }
+
+  if (sourcePath.endsWith('.html')) {
+    await rewriteKnownHiddenAssetRefs(sourcePath, newSiteName, baselineSite, hiddenAssetPaths);
+  }
+
   return response;
 }
 
@@ -733,10 +771,11 @@ async function copyDaFolder(newSiteName, baselineSite, onProgress) {
   if (files.length === 0) {
     throw new Error('No files found in baseline DA folder');
   }
+  const hiddenAssetPaths = files.filter(isHiddenAssetPath);
 
   for (let i = 0; i < files.length; i += 1) {
     if (onProgress) onProgress(i + 1, files.length, files[i]);
-    await copyDaFile(files[i], newSiteName, baselineSite);
+    await copyDaFile(files[i], newSiteName, baselineSite, hiddenAssetPaths);
   }
   return files;
 }
