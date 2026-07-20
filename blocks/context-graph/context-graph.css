@@ -21,6 +21,9 @@
   width: 100%;
   max-width: 1060px;
   margin: 0 auto;
+
+  /* Light-grey panel behind the dome graphic. */
+  background: #f6f6f6;
 }
 
 .context-graph .context-graph-center {
@@ -42,10 +45,10 @@
   align-items: center;
   gap: 6px;
 
-  /* Background matches the section so the label masks (breaks) the arc line
+  /* Background matches the stage so the label masks (breaks) the arc line
      that passes behind it — the text sits centered over the arc. */
   padding: 6px 16px;
-  background: var(--background-color, #f5f5f5);
+  background: #f6f6f6;
   border: 0;
   cursor: pointer;
   text-align: center;

@@ -195,6 +195,12 @@
    from the default 48px icon to a prominent centered illustration.
    ========================================================================== */
 
+/* Grey card surface (matches the source's greyish use-case tiles) instead of
+   the default white base-card background. */
+.cards.icon-lg > ul > li {
+  background-color: #f6f6f6;
+}
+
 /* Uniform 32px padding around the card content, matching the source. The base
    cards rule sets `article { display: contents }`, which drops any padding on
    the article — so restore it as a real flex column and pad it here. */
@@ -221,12 +227,13 @@
   padding: 0;
 }
 
-/* Centered graphic cell, ~47px below heading and ~34px above the body. */
+/* Centered graphic cell with balanced whitespace above and below, matching the
+   even title → graphic → body rhythm on the source. */
 .cards.icon-lg .cards-card-body:has(img),
 .cards.icon-lg .cards-card-body:has(picture) {
   display: flex;
   justify-content: center;
-  padding: 47px 0 34px;
+  padding: 40px 0;
 }
 
 .cards.icon-lg .cards-card-body img {

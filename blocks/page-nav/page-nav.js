@@ -31,7 +31,11 @@ export default function decorate(block) {
     a.classList.remove('button');
     a.closest('.button-container')?.classList.remove('button-container');
     const href = a.getAttribute('href') || '';
-    const isCta = /demo|contact/i.test(href);
+    // Identify the CTA by its label, not the href — an href can legitimately
+    // contain "demo" in its domain (e.g. …scdemos.aem.live) and must not turn
+    // every link into a CTA pill.
+    const label = a.textContent.trim().toLowerCase();
+    const isCta = /^(request a demo|contact)\b/.test(label);
     if (isCta) {
       a.classList.add('page-nav-cta');
       nav.dataset.hasCta = 'true';
