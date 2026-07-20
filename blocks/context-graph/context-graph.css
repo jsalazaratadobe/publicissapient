@@ -13,6 +13,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-3xl);
+  background: #f6f6f6;
 }
 
 /* ----- Stage: center image + surrounding nodes ----- */
@@ -21,7 +22,7 @@
   width: 100%;
   max-width: 1060px;
   margin: 0 auto;
-  background: #f6f6f6;
+ 
 
   /* Light-grey panel behind the dome graphic. */
   background: #f6f6f6;
