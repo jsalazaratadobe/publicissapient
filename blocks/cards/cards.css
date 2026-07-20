@@ -199,6 +199,7 @@
    the default white base-card background. */
 .cards.icon-lg > ul > li {
   background-color: #f6f6f6;
+  background: #f6f6f6;
 }
 
 /* Uniform 32px padding around the card content, matching the source. The base
