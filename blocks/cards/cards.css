@@ -335,10 +335,10 @@
 }
 
 /* ==========================================================================
-   Large variant — carousel of big landscape cards, one in view with the next
-   peeking, prev/next arrow controls and a "Slide X of N" status. Each card is
-   a full-bleed image with a frosted-glass text panel in the bottom-left.
-   Matches the "realities" section on the source:
+   Large variant — carousel of portrait cards, three in view per page, with
+   prev/next arrow controls and a "Slide X of N" status. Each card is a
+   full-bleed image with the title + description overlaid on the lower portion
+   over a gradient scrim. Matches the "realities" section on the source:
    publicissapient.com/industries/financial-services
    ========================================================================== */
 
@@ -368,12 +368,12 @@
 
 .cards.large > .cards-carousel-viewport > ul.cards-track > li {
   position: relative;
-  flex: 0 0 100%;
+  flex: 0 0 78%;
   scroll-snap-align: start;
   border: 0;
   border-radius: 16px;
   overflow: hidden;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 5 / 7;
 }
 
 .cards.large > .cards-carousel-viewport > ul.cards-track > li:hover {
@@ -408,21 +408,22 @@
   object-position: 50% 50%;
 }
 
-/* Text cell becomes the frosted-glass panel, anchored bottom-left */
+/* Gradient scrim over the image so overlaid white text stays legible */
+.cards.large > .cards-carousel-viewport > ul.cards-track > li::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 65%) 100%);
+}
+
+/* Text overlaid directly on the lower part of the image (no panel) */
 .cards.large .cards-card-body:not(:has(img), :has(picture)) {
   position: absolute;
-  bottom: var(--space-l);
-  left: var(--space-l);
-  width: min(454px, 80%);
+  z-index: 1;
+  inset: auto var(--space-l) var(--space-l);
   gap: var(--space-m);
-  padding: 24px 20px;
-  background-color: rgb(255 255 255 / 22%);
-  backdrop-filter: blur(12px);
-
-  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari needs the prefix for backdrop-filter */
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 16px;
+  padding: 0;
 }
 
 .cards.large .cards-card-body :is(h2, h3, h4) {
@@ -494,10 +495,10 @@
   color: light-dark(rgb(68 68 68), var(--color-gray-300));
 }
 
-/* Desktop: reveal the next card peeking at the right edge */
+/* Desktop: three cards side-by-side per page */
 @media (width >= 900px) {
   .cards.large > .cards-carousel-viewport > ul.cards-track > li {
-    flex-basis: calc(100% - var(--space-l) - 32px);
+    flex-basis: calc((100% - 2 * var(--space-l)) / 3);
   }
 
   .cards.large .cards-card-body :is(h2, h3, h4) {
