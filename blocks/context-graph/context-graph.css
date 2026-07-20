@@ -46,7 +46,6 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  background: #f6f6f6;
 
   /* Background matches the stage so the label masks (breaks) the arc line
      that passes behind it — the text sits centered over the arc. */
