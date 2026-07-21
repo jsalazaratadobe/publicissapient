@@ -18,13 +18,16 @@ const CAROUSEL_INTERVAL = 6000;
 
 /**
  * Candidate nav-fragment paths, in priority order. A `nav` metadata value wins.
- * Otherwise try `/content/nav` (local `aem up`) then `/nav` (preview/live where
- * content is published at the root).
+ * Otherwise pick the environment-appropriate path first to avoid a guaranteed
+ * 404: local `aem up` serves the fragment under `/content/nav`, while
+ * preview/live publish it at the root `/nav`. The other path stays as a
+ * fallback.
  */
 function getNavPathCandidates() {
   const meta = getMetadata('nav');
   if (meta) return [new URL(meta, window.location).pathname];
-  return ['/content/nav', '/nav'];
+  const isLocal = window.location.hostname.includes('localhost');
+  return isLocal ? ['/content/nav', '/nav'] : ['/nav', '/content/nav'];
 }
 
 /* ---------- Announcement carousel ---------- */

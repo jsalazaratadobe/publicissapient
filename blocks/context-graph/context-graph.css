@@ -23,10 +23,10 @@
   max-width: 1060px;
   margin: 0 auto;
 
-  /* Light-grey panel behind the dome graphic. Rounded corners to match the
-     16px radius used across the site's cards and panels. */
+  /* Light-grey panel behind the dome graphic. Softer rounded corners,
+     consistent with the rounded surfaces used across the site's cards. */
   background: #f6f6f6;
-  border-radius: 16px;
+  border-radius: 24px;
 }
 
 .context-graph .context-graph-center {
