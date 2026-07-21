@@ -76,23 +76,34 @@ export default function decorate(block) {
   if (cards.length > 1) {
     const MIN_SCALE = 0.9;
     const update = () => {
+      // Batch all layout reads first, then all style writes, so a scroll never
+      // interleaves reads and writes (which forces synchronous reflow).
       const pinTop = cards[0].getBoundingClientRect().top;
+      const metrics = cards.map((card, i) => (cards[i + 1]
+        ? { gap: cards[i + 1].getBoundingClientRect().top - pinTop, height: card.offsetHeight }
+        : null));
       cards.forEach((card, i) => {
-        const next = cards[i + 1];
-        if (!next) {
+        const m = metrics[i];
+        if (!m) {
           card.style.setProperty('--card-scale', '1');
           return;
         }
         // Progress: 0 while the next card is far below, 1 once it has fully
         // covered this pinned card (its top reaches the pin line).
-        const gap = next.getBoundingClientRect().top - pinTop;
-        const progress = Math.min(Math.max(1 - gap / card.offsetHeight, 0), 1);
+        const progress = Math.min(Math.max(1 - m.gap / m.height, 0), 1);
         const scale = 1 - (1 - MIN_SCALE) * progress;
         card.style.setProperty('--card-scale', scale.toFixed(4));
       });
     };
+    // Coalesce scroll/resize into one rAF-batched update per frame.
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    };
     update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
   }
 }

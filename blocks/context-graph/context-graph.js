@@ -12,6 +12,8 @@
  * Platforms are placed around the dome by order: 1st=left, 2nd=top, 3rd=right.
  */
 
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
 const POSITIONS = ['left', 'top', 'right'];
 
 export default function decorate(block) {
@@ -25,12 +27,16 @@ export default function decorate(block) {
   stage.setAttribute('role', 'tablist');
   stage.setAttribute('aria-label', 'Platforms');
 
-  // Center image — kept as the authored <img>, served as-is (no optimization
-  // resize, no cropping) so the graph renders at full fidelity.
+  // Center image — served through createOptimizedPicture so mobile gets a
+  // right-sized asset (the graphic renders at ~541px wide max) rather than the
+  // full-resolution source.
   const center = document.createElement('div');
   center.className = 'context-graph-center';
   const img = centerRow.querySelector('img');
-  if (img) center.append(img);
+  if (img) {
+    const optimized = createOptimizedPicture(img.src, img.alt || '', false, [{ width: '750' }]);
+    center.append(optimized);
+  }
   stage.append(center);
 
   const tiles = document.createElement('div');
