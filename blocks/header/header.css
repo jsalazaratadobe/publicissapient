@@ -21,6 +21,12 @@ header .nav-wrapper {
   top: 0;
   z-index: 20;
   background: #fff;
+
+  /* Establish a query container so the announcement band can break out using
+     container-query width units (cqw) instead of vw. The wrapper spans the
+     content width excluding the scrollbar, so 100cqw = the true visible width
+     and the band never overflows on OSes with classic (non-overlay) scrollbars. */
+  container-type: inline-size;
 }
 
 header nav {
@@ -41,10 +47,13 @@ header nav .nav-announcement {
   grid-area: announcement;
 
   /* Break out of the centered nav container so the red band spans the full
-     viewport width, edge to edge, regardless of the nav's max-width. */
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+     visible width, edge to edge, regardless of the nav's max-width. Uses
+     container-query width units (cqw) rather than vw so the band matches the
+     content width excluding the scrollbar — no horizontal overflow on OSes
+     with classic scrollbars. */
+  width: 100cqw;
+  margin-left: calc(50% - 50cqw);
+  margin-right: calc(50% - 50cqw);
   background: var(--brand-red);
   color: #fff;
 }
@@ -78,6 +87,23 @@ header nav .nav-announcement-slide {
 
 header nav .nav-announcement-slide[hidden] {
   display: none;
+}
+
+/* Mobile: smaller text and tighter line spacing so longer announcements
+   (e.g. "Meet Sapient Sustain…") stay readable when they wrap. Let the bar
+   grow vertically instead of clipping the wrapped lines. */
+@media (width < 600px) {
+  header nav .nav-announcement-inner {
+    height: auto;
+    min-height: 56px;
+    padding: 8px 16px;
+    gap: 8px;
+  }
+
+  header nav .nav-announcement-slide {
+    font-size: 13px;
+    line-height: 1.3;
+  }
 }
 
 header nav .nav-announcement-slide a {
@@ -252,9 +278,29 @@ header nav .nav-sections .nav-drop > ul > li > a:hover {
   background: var(--light-color, #f5f5f5);
 }
 
-header nav .nav-sections .nav-drop > ul > li > p {
+/* Title link wrapped in a paragraph (e.g. "Sapient Bodhi") — bold black title,
+   matching the source's menu items. */
+header nav .nav-sections .nav-drop > ul > li > p:has(> a) {
+  margin: 0;
+  padding: 10px 12px 0;
+}
+
+header nav .nav-sections .nav-drop > ul > li > p > a {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #000;
+  text-decoration: none;
+}
+
+header nav .nav-sections .nav-drop > ul > li > p > a:hover {
+  color: var(--brand-red);
+}
+
+/* Description paragraph (no link) — muted grey supporting text. */
+header nav .nav-sections .nav-drop > ul > li > p:not(:has(a)) {
   margin: 0 0 4px;
-  padding: 0 12px 8px;
+  padding: 2px 12px 8px;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
@@ -370,16 +416,9 @@ header nav .nav-hamburger {
     height: 46px;
   }
 
-  /* Tools (search + CTA) stay in the header bar, right-aligned. */
+  /* Utility menu (Search / Let's Connect) hidden on mobile. */
   header nav .nav-tools {
-    grid-area: tools;
-    gap: 12px;
-    padding: 0 12px;
-  }
-
-  header nav .nav-tools .nav-cta {
-    padding: 10px 16px;
-    font-size: 14px;
+    display: none;
   }
 
   /* Accordion drawer, hidden until open. */

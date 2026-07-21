@@ -227,15 +227,20 @@
   padding: 0;
 }
 
-/* Centered graphic cell with balanced whitespace above and below, matching the
-   even title → graphic → body rhythm on the source. */
+/* Centered graphic cell with generous whitespace above and below, matching the
+   even title → graphic → body rhythm on the source (title, then a large gap,
+   the 180px illustration, another large gap, then the body copy). The image is
+   lifted into its own `.cards-card-image` cell by decorateDefault, so target
+   that (and the body-with-image fallback) rather than only the body. */
+.cards.icon-lg .cards-card-image,
 .cards.icon-lg .cards-card-body:has(img),
 .cards.icon-lg .cards-card-body:has(picture) {
   display: flex;
   justify-content: center;
-  padding: 40px 0;
+  padding: 48px 0;
 }
 
+.cards.icon-lg .cards-card-image img,
 .cards.icon-lg .cards-card-body img {
   width: 180px;
   height: 180px;
@@ -335,10 +340,12 @@
 }
 
 /* ==========================================================================
-   Large variant — carousel of portrait cards, three in view per page, with
-   prev/next arrow controls and a "Slide X of N" status. Each card is a
-   full-bleed image with the title + description overlaid on the lower portion
-   over a gradient scrim. Matches the "realities" section on the source:
+   Large variant — one-at-a-time carousel of big landscape image tiles with
+   prev/next arrow controls and a "Slide X of N" status. Each card is a single
+   full-bleed image (portrait on mobile, 16:9 landscape on desktop) with the
+   title + description in a frosted-glass panel over the lower-left of the
+   image. One card is shown per view and the next card peeks. Matches the
+   "realities of financial services" section on the source:
    publicissapient.com/industries/financial-services
    ========================================================================== */
 
@@ -354,7 +361,7 @@
 .cards.large > .cards-carousel-viewport > ul.cards-track {
   display: flex;
   grid-template-columns: none;
-  gap: var(--space-l);
+  gap: var(--space-m);
   margin: 0;
   padding: 0;
   overflow-x: auto;
@@ -366,14 +373,15 @@
   display: none;
 }
 
+/* One card per view, the next card peeking on the right. */
 .cards.large > .cards-carousel-viewport > ul.cards-track > li {
   position: relative;
-  flex: 0 0 78%;
+  flex: 0 0 92%;
   scroll-snap-align: start;
   border: 0;
   border-radius: 16px;
   overflow: hidden;
-  aspect-ratio: 5 / 7;
+  aspect-ratio: 328 / 457;
 }
 
 .cards.large > .cards-carousel-viewport > ul.cards-track > li:hover {
@@ -381,54 +389,48 @@
   box-shadow: none;
 }
 
-/* Image cell fills the whole card */
-.cards.large .cards-card-body:has(img),
-.cards.large .cards-card-body:has(picture) {
+/* The article is the positioning context; image + glass panel stack inside. */
+.cards.large > .cards-carousel-viewport > ul.cards-track > li > article {
+  display: block;
   position: absolute;
   inset: 0;
-  padding: 0;
+}
+
+/* Image fills the whole card */
+.cards.large .cards-card-image {
+  position: absolute;
+  inset: 0;
   line-height: 0;
 }
 
-.cards.large .cards-card-body:has(img) p {
-  margin: 0;
-  height: 100%;
-}
-
-.cards.large .cards-card-body picture {
+.cards.large .cards-card-image picture,
+.cards.large .cards-card-image img {
   display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.cards.large .cards-card-body img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 50%;
 }
 
-/* Gradient scrim over the image so overlaid white text stays legible */
-.cards.large > .cards-carousel-viewport > ul.cards-track > li::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 65%) 100%);
-}
-
-/* Text overlaid directly on the lower part of the image (no panel) */
-.cards.large .cards-card-body:not(:has(img), :has(picture)) {
+/* Frosted-glass text panel over the lower-left of the image (glassmorphism).
+   The panel carries a dark tint (not just translucent white) so the white text
+   stays legible even if the underlying image is light or fails to load —
+   guarding against a white-on-white unreadable state. */
+.cards.large .cards-card-body:not(.cards-card-image) {
   position: absolute;
   z-index: 1;
-  inset: auto var(--space-l) var(--space-l);
+  inset: auto 12px 12px;
   gap: var(--space-m);
-  padding: 0;
+  padding: 24px 20px;
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 12px;
+  background: rgb(20 20 20 / 42%);
+  backdrop-filter: blur(12px);
 }
 
 .cards.large .cards-card-body :is(h2, h3, h4) {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 500;
   line-height: 1.2;
   color: #fff;
@@ -437,8 +439,8 @@
 /* stylelint-disable-next-line no-descending-specificity -- variant overrides base card body styles intentionally */
 .cards.large .cards-card-body p {
   margin: 0;
-  font-size: 18px;
-  line-height: 28px;
+  font-size: 16px;
+  line-height: 24px;
   color: #fff;
 }
 
@@ -491,17 +493,35 @@
 .cards.large .cards-carousel-status {
   margin-top: var(--space-m);
   font-family: var(--font-family-body);
-  font-size: var(--body-font-size-s);
-  color: light-dark(rgb(68 68 68), var(--color-gray-300));
+  font-size: var(--body-font-size-m);
+  color: light-dark(var(--color-ink), var(--color-parchment));
 }
 
-/* Desktop: three cards side-by-side per page */
+/* Desktop: one big 16:9 landscape card per view, next card peeking. */
 @media (width >= 900px) {
+  .cards.large > .cards-carousel-viewport > ul.cards-track {
+    gap: var(--space-xl);
+  }
+
   .cards.large > .cards-carousel-viewport > ul.cards-track > li {
-    flex-basis: calc((100% - 2 * var(--space-l)) / 3);
+    flex-basis: 88%;
+    aspect-ratio: 16 / 9;
+  }
+
+  .cards.large .cards-card-body:not(.cards-card-image) {
+    inset: auto auto 32px 32px;
+    width: 496px;
+    max-width: calc(100% - 64px);
+    border-radius: 16px;
   }
 
   .cards.large .cards-card-body :is(h2, h3, h4) {
     font-size: 24px;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity -- variant desktop paragraph override is intentional */
+  .cards.large .cards-card-body p {
+    font-size: 18px;
+    line-height: 28px;
   }
 }
