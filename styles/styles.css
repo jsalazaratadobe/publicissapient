@@ -443,6 +443,17 @@ button.button {
   transition: all 0.3s;
 }
 
+/* Mobile: let CTA button labels wrap instead of truncating with an ellipsis,
+   so long calls-to-action stay fully readable on narrow screens. */
+@media (width < 600px) {
+  a.button:any-link,
+  button.button {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+}
+
 input,
 textarea,
 select,

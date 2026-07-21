@@ -112,3 +112,15 @@
 .page-nav .page-nav-cta:hover::after {
   transform: translateX(4px);
 }
+
+/* ==========================================================================
+   Mobile: hide the in-page anchor nav entirely (and the sticky sentinel /
+   placeholder the JS injects), so it doesn't take up space on small screens.
+   ========================================================================== */
+@media (width < 900px) {
+  .page-nav.block,
+  .page-nav-sentinel,
+  .page-nav-placeholder {
+    display: none;
+  }
+}
