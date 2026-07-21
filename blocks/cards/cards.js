@@ -222,6 +222,20 @@ function decorateLargeCarousel(block) {
   const slides = [...track.children];
   if (slides.length < 2) return;
 
+  // Re-optimize the full-bleed card images with responsive widths: the card is
+  // ~328px wide on mobile but ~1056px on desktop, so serving a single 750px
+  // asset over-sends on small screens. Give mobile a 600px source and desktop a
+  // 1200px one (webp preferred) to cut the download without visible quality loss.
+  track.querySelectorAll('picture > img').forEach((img) => {
+    const picture = img.closest('picture');
+    if (picture) {
+      picture.replaceWith(createOptimizedPicture(img.src, img.alt || '', false, [
+        { media: '(min-width: 900px)', width: '1200' },
+        { width: '600' },
+      ]));
+    }
+  });
+
   track.classList.add('cards-track');
 
   const viewport = createTag('div', { class: 'cards-carousel-viewport' });

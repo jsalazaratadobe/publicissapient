@@ -22,9 +22,13 @@ export default function decorate(block) {
 
   const [centerRow, ...platformRows] = rows;
 
+  // Labeled group of platform toggle buttons. This is not a true tablist —
+  // the detail tiles below stay visible regardless of selection, and the stage
+  // also contains the center graphic — so `role="group"` (which has no
+  // required-children constraint) is both valid and semantically honest.
   const stage = document.createElement('div');
   stage.className = 'context-graph-stage';
-  stage.setAttribute('role', 'tablist');
+  stage.setAttribute('role', 'group');
   stage.setAttribute('aria-label', 'Platforms');
 
   // Center image — served through createOptimizedPicture so mobile gets a
@@ -59,7 +63,6 @@ export default function decorate(block) {
     node.type = 'button';
     node.className = 'context-graph-node';
     node.dataset.position = POSITIONS[i] || 'top';
-    node.setAttribute('role', 'tab');
     node.setAttribute('aria-controls', `${id}-tile`);
     node.id = `${id}-node`;
     while (labelCell?.firstChild) node.append(labelCell.firstChild);
@@ -88,13 +91,13 @@ export default function decorate(block) {
       const active = i === index;
       node.classList.toggle('is-active', active);
       node.classList.toggle('is-dimmed', !active);
-      node.setAttribute('aria-selected', active ? 'true' : 'false');
-      node.tabIndex = active ? 0 : -1;
+      node.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
     tileEls.forEach((tile, i) => {
       const active = i === index;
       tile.classList.toggle('is-active', active);
       tile.classList.toggle('is-dimmed', !active);
+      tile.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
   };
 
